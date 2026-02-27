@@ -39,13 +39,20 @@ export default function AdminDashboard() {
     }, []);
 
     async function checkAuth() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                router.push('/admin/login');
+                return;
+            }
+            setUserId(user.id);
+            await fetchEvents();
+        } catch (err) {
+            console.error('Auth check failed:', err);
             router.push('/admin/login');
-            return;
+        } finally {
+            setLoading(false);
         }
-        setUserId(user.id);
-        fetchEvents();
     }
 
     async function fetchEvents() {
@@ -56,7 +63,6 @@ export default function AdminDashboard() {
 
         if (error) {
             console.error(error);
-            setLoading(false);
             return;
         }
 
@@ -71,7 +77,6 @@ export default function AdminDashboard() {
         );
 
         setEvents(eventsWithCounts);
-        setLoading(false);
     }
 
     async function handleDeleteConfirm() {
