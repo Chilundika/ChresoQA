@@ -30,6 +30,7 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<Tab>('registrations');
     const [copied, setCopied] = useState<string | null>(null);
+    const [sendingInvite, setSendingInvite] = useState(false);
 
     useEffect(() => {
         checkAuthAndFetch();
@@ -92,21 +93,39 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
         }
     };
 
-    const handleSendMeetLink = () => {
-        if (!event) return;
-        if (!event.meet_url) {
-            alert('No Google Meet URL configured for this event.');
-            return;
-        }
-        if (registrations.length === 0) {
-            alert('No registrations yet.');
-            return;
-        }
-        const emails = registrations.map((r) => r.email);
-        const gmailUrl = generateGmailComposeLink(emails, event.meet_url, event.title);
+    const handleAddAttendees = async () => {
+        if (!event || !event.meet_url) return;
+        if (registrations.length === 0) return;
 
-        // Open Gmail Compose in a new tab
-        window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+        setSendingInvite(true);
+        try {
+            const emails = registrations.map(r => r.email);
+            const res = await fetch('/api/calendar/add-attendees', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    meetUrl: event.meet_url,
+                    emails
+                })
+            });
+
+            if (res.status === 401) {
+                // Not authenticated, redirect to Google OAuth
+                window.location.href = `/api/calendar/auth?eventId=${event.id}`;
+                return;
+            }
+
+            const data = await res.json();
+            if (data.error) {
+                alert('Error adding attendees: ' + data.error);
+            } else {
+                alert(`Successfully added ${data.count} attendees to the Google Calendar event!`);
+            }
+        } catch (e: any) {
+            alert('Request failed: ' + e.message);
+        } finally {
+            setSendingInvite(false);
+        }
     };
 
     if (loading) {
@@ -274,6 +293,25 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                                 </p>
                             </div>
 
+                            {/* Start Timestamp */}
+                            <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
+                                <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                                    <Clock className="w-3.5 h-3.5" /> Registration Closes (2hr prior)
+                                </div>
+                                <p className="text-gray-900">
+                                    {event.start_timestamp
+                                        ? new Date(new Date(event.start_timestamp).getTime() - 7200000).toLocaleDateString('en-US', {
+                                            weekday: 'long',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                            hour: '2-digit',
+                                            minute: '2-digit',
+                                        })
+                                        : '—  Not set'}
+                                </p>
+                            </div>
+
                             {/* Max Capacity */}
                             <div className="p-4 rounded-xl bg-gray-50 border border-gray-200">
                                 <div className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
@@ -407,11 +445,21 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                                 {/* Action Buttons */}
                                 <div className="flex flex-col sm:flex-row gap-3">
                                     <button
-                                        onClick={handleSendMeetLink}
+                                        onClick={handleAddAttendees}
+                                        disabled={sendingInvite}
                                         className="btn-primary flex items-center justify-center gap-2 flex-1 py-3.5"
                                     >
-                                        <Mail className="w-5 h-5" />
-                                        Open Email Client (BCC All)
+                                        {sendingInvite ? (
+                                            <>
+                                                <Loader2 className="w-5 h-5 animate-spin" />
+                                                Sending...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Calendar className="w-5 h-5" />
+                                                Send Meet Link via Calendar API
+                                            </>
+                                        )}
                                     </button>
                                     <button
                                         onClick={() => {

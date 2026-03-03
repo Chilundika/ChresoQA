@@ -17,6 +17,15 @@ interface EventCardProps {
 
 export default function EventCard({ event, registrationCount }: EventCardProps) {
     const isFull = registrationCount >= event.max_capacity;
+
+    // Evaluate if event is manually closed, or blocked by 2 hour window
+    const isOpen = event.is_open !== false;
+    const isWithinTwoHours = event.start_timestamp
+        ? (Date.parse(event.start_timestamp) - Date.now() <= 7200000)
+        : false;
+    const isPast = event.start_timestamp ? new Date(event.start_timestamp) < new Date() : false;
+    const isClosed = !isOpen || isFull || isWithinTwoHours || isPast;
+
     const capacityPercent = Math.min((registrationCount / event.max_capacity) * 100, 100);
     const capacityClass = capacityPercent >= 100 ? 'full' : capacityPercent >= 80 ? 'warning' : '';
 
@@ -79,15 +88,15 @@ export default function EventCard({ event, registrationCount }: EventCardProps) 
 
             {/* CTA */}
             <Link
-                href={isFull ? '#' : `/events/${event.id}`}
-                className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${isFull
-                        ? 'bg-slate-800/50 text-gray-400 cursor-not-allowed'
-                        : 'btn-primary'
+                href={isClosed ? '#' : `/events/${event.id}`}
+                className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${isClosed
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-green-500 hover:bg-green-600 text-white shadow-lg shadow-green-500/20'
                     }`}
-                onClick={(e) => isFull && e.preventDefault()}
+                onClick={(e) => isClosed && e.preventDefault()}
             >
-                {isFull ? (
-                    'Event has reached its participant limit'
+                {isClosed ? (
+                    'Registrations Closed!'
                 ) : (
                     <>
                         Register Now

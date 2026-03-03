@@ -66,6 +66,16 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
     }
 
     const isFull = regCount >= event.max_capacity;
+
+    // Check 2-hour window logic (UTC parsing handled automatically by Date.parse for ISO strings)
+    const isPast = event.start_timestamp ? new Date(event.start_timestamp) < new Date() : false;
+    const isWithinTwoHours = event.start_timestamp
+        ? (Date.parse(event.start_timestamp) - Date.now() <= 7200000)
+        : false;
+
+    const isClosed = isWithinTwoHours;
+    const isOpen = event.is_open !== false; // handle nulls gracefully as true by default
+
     const capacityPercent = Math.min((regCount / event.max_capacity) * 100, 100);
     const capacityClass = capacityPercent >= 100 ? 'full' : capacityPercent >= 80 ? 'warning' : '';
 
@@ -81,9 +91,18 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                 {/* Event Info — Left */}
                 <div className="lg:col-span-2 space-y-6 animate-slide-up">
                     <div className="glass-card p-6 space-y-4">
-                        <span className={`badge badge-${event.type}`}>
-                            {typeLabels[event.type] || event.type}
-                        </span>
+                        <div className="flex items-center gap-2">
+                            <span className={`badge badge-${event.type}`}>
+                                {typeLabels[event.type] || event.type}
+                            </span>
+                            {isPast ? (
+                                <span className="badge bg-gray-500/15 text-gray-600 border border-gray-500/30">Past</span>
+                            ) : (!isOpen || isFull || isClosed) ? (
+                                <span className="badge bg-amber-500/15 text-amber-600 border border-amber-500/30">Closed</span>
+                            ) : (
+                                <span className="badge bg-green-500/15 text-green-600 border border-green-500/30">Live</span>
+                            )}
+                        </div>
                         <h1 className="text-2xl sm:text-3xl font-black text-gray-900 leading-tight">
                             {event.title}
                         </h1>
@@ -139,9 +158,10 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
 
                 {/* Registration Form — Right */}
                 <div className="lg:col-span-3 animate-slide-up" style={{ animationDelay: '100ms' }}>
-                    <RegistrationForm eventId={event.id} isFull={isFull} />
+                    <RegistrationForm eventId={event.id} isFull={isFull} isClosed={isClosed} isOpen={isOpen} isPast={isPast} />
                 </div>
             </div>
+
         </div>
     );
 }

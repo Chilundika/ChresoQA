@@ -10,7 +10,10 @@ export interface Event {
     meet_url: string | null;
     admin_id: string | null;
     created_at: string;
+    start_timestamp?: string | null;
     registration_count?: number;
+    is_open: boolean;
+    is_archived: boolean;
 }
 
 export interface Registration {

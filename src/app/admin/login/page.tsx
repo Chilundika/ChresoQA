@@ -1,10 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense, useEffect } from 'react';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
-import { Loader2, Mail, KeyRound } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Loader2, Mail, KeyRound, AlertTriangle, CheckCircle, X } from 'lucide-react';
+
+function ExpiredToast() {
+    const searchParams = useSearchParams();
+    const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+    useEffect(() => {
+        if (searchParams.get('expired') === 'true') {
+            setToast({ message: 'Session expired due to inactivity. Please log in again.', type: 'error' });
+            const timer = setTimeout(() => setToast(null), 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [searchParams]);
+
+    if (!toast) return null;
+
+    return (
+        <div className={`toast-notification ${toast.type === 'success' ? 'toast-success' : 'toast-error'}`}>
+            {toast.type === 'success' ? (
+                <CheckCircle className="w-5 h-5 shrink-0" />
+            ) : (
+                <AlertTriangle className="w-5 h-5 shrink-0" />
+            )}
+            <span>{toast.message}</span>
+            <button onClick={() => setToast(null)} className="ml-auto p-1 hover:opacity-70 transition">
+                <X className="w-4 h-4" />
+            </button>
+        </div>
+    );
+}
 
 export default function AdminLoginPage() {
     const router = useRouter();
@@ -34,6 +63,11 @@ export default function AdminLoginPage() {
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center px-4">
+            {/* ── Toast Notification ── */}
+            <Suspense fallback={null}>
+                <ExpiredToast />
+            </Suspense>
+
             <div className="glass-card p-8 sm:p-10 w-full max-w-md animate-slide-up">
                 {/* Header */}
                 <div className="text-center mb-8">

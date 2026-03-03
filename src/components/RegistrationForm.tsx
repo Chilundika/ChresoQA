@@ -10,6 +10,9 @@ import { Send, Loader2, ShieldAlert } from 'lucide-react';
 interface RegistrationFormProps {
     eventId: string;
     isFull: boolean;
+    isClosed?: boolean;
+    isOpen?: boolean;
+    isPast?: boolean;
 }
 
 // Cookie helpers
@@ -46,7 +49,7 @@ function isEventRegisteredViaCookie(eventId: string): boolean {
     return getRegisteredEvents().includes(eventId);
 }
 
-export default function RegistrationForm({ eventId, isFull }: RegistrationFormProps) {
+export default function RegistrationForm({ eventId, isFull, isClosed, isOpen = true, isPast }: RegistrationFormProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -145,8 +148,42 @@ export default function RegistrationForm({ eventId, isFull }: RegistrationFormPr
         return (
             <div className="glass-card p-8 text-center">
                 <div className="text-5xl mb-4">🚫</div>
-                <h3 className="text-xl font-bold text-red-400 mb-2">Registration Closed</h3>
+                <h3 className="text-xl font-bold text-red-400 mb-2">Event Full</h3>
                 <p className="text-gray-500">Event has reached its participant limit.</p>
+            </div>
+        );
+    }
+
+    if (isPast) {
+        return (
+            <div className="glass-card p-8 text-center">
+                <div className="text-5xl mb-4">📅</div>
+                <h3 className="text-xl font-bold text-gray-500 mb-2">Event Ended</h3>
+                <p className="text-gray-400">This event has already concluded.</p>
+            </div>
+        );
+    }
+
+    if (!isOpen) {
+        return (
+            <div className="glass-card p-8 text-center animate-fade-in">
+                <div className="flex items-center justify-center mb-4">
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-amber-500/10">
+                        <ShieldAlert className="w-8 h-8 text-amber-400" />
+                    </div>
+                </div>
+                <h3 className="text-xl font-bold text-amber-400 mb-2">Registration Closed</h3>
+                <p className="text-gray-500">Registration for this event has been closed by the IT Department.</p>
+            </div>
+        );
+    }
+
+    if (isClosed) {
+        return (
+            <div className="glass-card p-8 text-center">
+                <div className="text-5xl mb-4">⏳</div>
+                <h3 className="text-xl font-bold text-amber-400 mb-2">Registration Closed</h3>
+                <p className="text-gray-500">Registration closes 2 hours before the event starts.</p>
             </div>
         );
     }
@@ -224,7 +261,7 @@ export default function RegistrationForm({ eventId, isFull }: RegistrationFormPr
             {/* Phone Numbers */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Contact Number</label>
+                    <label className="block text-sm font-medium text-gray-600 mb-1.5">Official Contact</label>
                     <input
                         type="tel"
                         name="contact_number"

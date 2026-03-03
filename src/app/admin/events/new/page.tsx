@@ -17,8 +17,9 @@ export default function NewEventPage() {
     const [description, setDescription] = useState('');
     const [type, setType] = useState<EventCategory>('orientation');
     const [eventDate, setEventDate] = useState('');
-    const [maxCapacity, setMaxCapacity] = useState(200);
+    const [maxCapacity, setMaxCapacity] = useState<number | ''>(200);
     const [meetUrl, setMeetUrl] = useState('');
+    const [startTimestamp, setStartTimestamp] = useState('');
 
     useEffect(() => {
         checkAuth();
@@ -43,9 +44,10 @@ export default function NewEventPage() {
             description: description || null,
             type,
             event_date: eventDate ? new Date(eventDate).toISOString() : null,
-            max_capacity: maxCapacity,
+            max_capacity: typeof maxCapacity === 'number' ? maxCapacity : 200,
             meet_url: meetUrl || null,
             admin_id: userId,
+            start_timestamp: startTimestamp ? new Date(startTimestamp).toISOString() : null,
         });
 
         if (insertError) {
@@ -123,8 +125,21 @@ export default function NewEventPage() {
                         </div>
                     </div>
 
-                    {/* Capacity & Meet URL */}
+                    {/* Start Timestamp & Capacity */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-600 mb-1.5">
+                                Start Timestamp *
+                                <span className="block text-xs text-gray-400 font-normal">Registration closes 2 hours before this</span>
+                            </label>
+                            <input
+                                type="datetime-local"
+                                value={startTimestamp}
+                                onChange={(e) => setStartTimestamp(e.target.value)}
+                                className="input-field"
+                                required
+                            />
+                        </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1.5">
                                 Max Capacity *
@@ -132,23 +147,25 @@ export default function NewEventPage() {
                             <input
                                 type="number"
                                 value={maxCapacity}
-                                onChange={(e) => setMaxCapacity(parseInt(e.target.value) || 200)}
+                                onChange={(e) => setMaxCapacity(e.target.value === '' ? '' : parseInt(e.target.value))}
                                 className="input-field"
                                 min={1}
-                                max={10000}
+                                max={200}
                                 required
                             />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium text-gray-600 mb-1.5">Google Meet URL</label>
-                            <input
-                                type="url"
-                                value={meetUrl}
-                                onChange={(e) => setMeetUrl(e.target.value)}
-                                className="input-field"
-                                placeholder="https://meet.google.com/..."
-                            />
-                        </div>
+                    </div>
+
+                    {/* Meet URL (Full Width) */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-1.5">Google Meet URL</label>
+                        <input
+                            type="url"
+                            value={meetUrl}
+                            onChange={(e) => setMeetUrl(e.target.value)}
+                            className="input-field"
+                            placeholder="https://meet.google.com/..."
+                        />
                     </div>
 
                     {/* Submit */}
