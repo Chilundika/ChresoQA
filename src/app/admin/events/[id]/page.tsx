@@ -20,6 +20,16 @@ const typeLabels: Record<string, string> = {
     live_qa: 'Live Q&A',
 };
 
+function formatGoogleCalendarDate(dateStr: string): { start: string; end: string } {
+    const d = new Date(dateStr);
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const fmt = (dt: Date) =>
+        `${dt.getUTCFullYear()}${pad(dt.getUTCMonth() + 1)}${pad(dt.getUTCDate())}T${pad(dt.getUTCHours())}${pad(dt.getUTCMinutes())}${pad(dt.getUTCSeconds())}Z`;
+    const start = fmt(d);
+    const end = fmt(new Date(d.getTime() + 60 * 60 * 1000));
+    return { start, end };
+}
+
 type Tab = 'registrations' | 'details' | 'send-link';
 
 export default function AdminEventDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -121,6 +131,27 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
         } finally {
             setSendingInvite(false);
         }
+    };
+
+    const handleOpenGoogleCalendar = () => {
+        if (!event) return;
+        const base = 'https://calendar.google.com/calendar/render?action=TEMPLATE';
+        const text = encodeURIComponent(event.title);
+        const details = encodeURIComponent(
+            [event.description, event.meet_url ? `Join: ${event.meet_url}` : '']
+                .filter(Boolean)
+                .join('\n\n')
+        );
+        const location = event.meet_url ? encodeURIComponent(event.meet_url) : '';
+        const emails = registrations.map(r => r.email).join(',');
+        const add = encodeURIComponent(emails);
+        let dates = '';
+        if (event.event_date) {
+            const { start, end } = formatGoogleCalendarDate(event.event_date);
+            dates = `${start}/${end}`;
+        }
+        const url = `${base}&text=${text}&details=${details}&location=${location}&add=${add}${dates ? `&dates=${dates}` : ''}`;
+        window.open(url, '_blank', 'noopener,noreferrer');
     };
 
     if (loading) {
@@ -465,6 +496,13 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
                                     >
                                         {copied === 'body' ? <Check className="w-5 h-5 text-green-400" /> : <ClipboardCopy className="w-5 h-5" />}
                                         {copied === 'body' ? 'Email Body Copied!' : 'Copy Email Body'}
+                                    </button>
+                                    <button
+                                        onClick={handleOpenGoogleCalendar}
+                                        className="btn-secondary flex items-center justify-center gap-2 flex-1 py-3.5 border-blue-400/30 text-blue-400 hover:bg-blue-500/10"
+                                    >
+                                        <ExternalLink className="w-5 h-5" />
+                                        Open Google Calendar
                                     </button>
                                 </div>
 

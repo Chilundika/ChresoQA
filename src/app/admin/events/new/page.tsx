@@ -145,6 +145,35 @@ export default function NewEventPage() {
                         </div>
                     </div>
 
+                    {/* Google Meet Integration */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-600 mb-1.5">
+                            Meeting Link
+                            <span className="block text-xs text-gray-400 font-normal">Create a link then paste it below</span>
+                        </label>
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <button
+                                type="button"
+                                onClick={() => window.open('https://meet.google.com/new', '_blank')}
+                                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-100 transition text-sm font-semibold"
+                            >
+                                <img 
+                                    src="https://www.gstatic.com/images/branding/product/1x/meet_32dp.png" 
+                                    alt="G-Meet" 
+                                    className="w-5 h-5" 
+                                />
+                                Generate New Link
+                            </button>
+        
+                             <input
+                             type="url"
+                             value={meetUrl}
+                             onChange={(e) => setMeetUrl(e.target.value)}
+                             className="input-field flex-1"
+                             placeholder="Paste https://meet.google.com/... here"
+                             />
+                            </div>
+                        </div>
                     {/* Meet URL (Full Width) */}
                     <div>
                         <label className="block text-sm font-medium text-gray-600 mb-1.5">Google Meet URL</label>
