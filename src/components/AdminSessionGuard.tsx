@@ -21,6 +21,7 @@ export default function AdminSessionGuard({ children }: { children: React.ReactN
 
         // Pass a query parameter to show the toast on the login page
         router.push('/admin/login?expired=true');
+        router.refresh();
     };
 
     const resetTimer = () => {
