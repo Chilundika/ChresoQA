@@ -1,8 +1,16 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { createServerSupabaseClient } from '@/lib/supabase-server';
 
 export async function POST(req: Request) {
     try {
+        // Verify Supabase session before processing
+        const supabase = await createServerSupabaseClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const cookieStore = await cookies();
         let accessToken = cookieStore.get('gcal_access_token')?.value;
         const refreshToken = cookieStore.get('gcal_refresh_token')?.value;

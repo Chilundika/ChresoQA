@@ -21,7 +21,6 @@ export default function AdminDashboard() {
     const router = useRouter();
     const [events, setEvents] = useState<(Event & { registration_count: number })[]>([]);
     const [loading, setLoading] = useState(true);
-    const [userId, setUserId] = useState<string | null>(null);
 
     // Delete modal state
     const [deleteTarget, setDeleteTarget] = useState<(Event & { registration_count: number }) | null>(null);
@@ -38,26 +37,10 @@ export default function AdminDashboard() {
         setTimeout(() => setToast(null), 3500);
     }, []);
 
+    // Middleware guarantees the user is authenticated, so fetch events directly
     useEffect(() => {
-        checkAuth();
+        fetchEvents().finally(() => setLoading(false));
     }, []);
-
-    async function checkAuth() {
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                router.push('/admin/login');
-                return;
-            }
-            setUserId(user.id);
-            await fetchEvents();
-        } catch (err) {
-            console.error('Auth check failed:', err);
-            router.push('/admin/login');
-        } finally {
-            setLoading(false);
-        }
-    }
 
     async function fetchEvents() {
         const { data, error } = await supabase

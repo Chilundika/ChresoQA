@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { EventCategory } from '@/lib/types';
 import { useRouter } from 'next/navigation';
@@ -11,7 +11,6 @@ export default function NewEventPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [userId, setUserId] = useState<string | null>(null);
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -21,23 +20,13 @@ export default function NewEventPage() {
     const [meetUrl, setMeetUrl] = useState('');
     const [startTimestamp, setStartTimestamp] = useState('');
 
-    useEffect(() => {
-        checkAuth();
-    }, []);
-
-    async function checkAuth() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            router.push('/admin/login');
-            return;
-        }
-        setUserId(user.id);
-    }
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setLoading(true);
+
+        // Middleware guarantees auth; fetch user on-demand for admin_id
+        const { data: { user } } = await supabase.auth.getUser();
 
         const { error: insertError } = await supabase.from('events').insert({
             title,
@@ -46,7 +35,7 @@ export default function NewEventPage() {
             event_date: eventDate ? new Date(eventDate).toISOString() : null,
             max_capacity: typeof maxCapacity === 'number' ? maxCapacity : 200,
             meet_url: meetUrl || null,
-            admin_id: userId,
+            admin_id: user?.id ?? null,
             start_timestamp: startTimestamp ? new Date(startTimestamp).toISOString() : null,
         });
 

@@ -32,18 +32,13 @@ export default function AdminEventDetailPage({ params }: { params: Promise<{ id:
     const [copied, setCopied] = useState<string | null>(null);
     const [sendingInvite, setSendingInvite] = useState(false);
 
+    // Middleware guarantees the user is authenticated
     useEffect(() => {
-        checkAuthAndFetch();
+        fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    async function checkAuthAndFetch() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            router.push('/admin/login');
-            return;
-        }
-
+    async function fetchData() {
         const { data: eventData } = await supabase
             .from('events')
             .select('*')

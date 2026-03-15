@@ -1,6 +1,5 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-
-let supabaseInstance: SupabaseClient | null = null;
+import { createBrowserClient } from '@supabase/ssr';
+import type { SupabaseClient } from '@supabase/supabase-js';let supabaseInstance: SupabaseClient | null = null;
 
 export function getSupabase(): SupabaseClient {
     if (supabaseInstance) return supabaseInstance;
@@ -12,14 +11,14 @@ export function getSupabase(): SupabaseClient {
         // Return a dummy client that won't crash during SSR/build
         // At runtime in the browser, the env vars should be available
         if (typeof window === 'undefined') {
-            return createClient('https://placeholder.supabase.co', 'placeholder-key');
+            return createBrowserClient('https://placeholder.supabase.co', 'placeholder-key');
         }
         throw new Error(
             'Missing Supabase env vars. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local'
         );
     }
 
-    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
+    supabaseInstance = createBrowserClient(supabaseUrl, supabaseAnonKey);
     return supabaseInstance;
 }
 

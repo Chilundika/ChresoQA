@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
+import { createServerSupabaseClient } from '@/lib/supabase-server';
 
 export async function GET(req: Request) {
+    // Verify Supabase session before initiating Google OAuth
+    const supabase = await createServerSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        return new Response('Unauthorized', { status: 401 });
+    }
+
     const clientId = process.env.GOOGLE_CLIENT_ID;
     const redirectUri = `${new URL(req.url).origin}/api/calendar/callback`;
     const eventId = new URL(req.url).searchParams.get('eventId');
