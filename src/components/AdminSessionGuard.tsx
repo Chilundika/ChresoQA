@@ -20,8 +20,7 @@ export default function AdminSessionGuard({ children }: { children: React.ReactN
         await supabase.auth.signOut();
 
         // Pass a query parameter to show the toast on the login page
-        router.push('/admin/login?expired=true');
-        router.refresh();
+        window.location.href = '/admin/login?expired=true';
     };
 
     const resetTimer = () => {
