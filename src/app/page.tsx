@@ -87,9 +87,9 @@ export default function HomePage() {
           Campus Events Registration
         </div>
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight">
-          <span className="text-gray-900">Discover & Register for</span>
+          <span className="text-black">Discover & Register for</span>
           <br />
-          <span className="gradient-text">Campus Events</span>
+          <span className="text-black">Campus Events</span>
         </h1>
         <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
           Join Orientations, Tutorials, and Live Q&A sessions. Secure your spot before it fills up!

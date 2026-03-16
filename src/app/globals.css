@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import "../../node_modules/tailwindcss/index.css";
+@import "tailwindcss";
 
 @theme {
   --font-sans: 'Inter', sans-serif;
@@ -26,24 +26,31 @@
 /* ===== Base Styles ===== */
 body {
   font-family: 'Inter', sans-serif;
-  background: #F4F7F6;
+  background: linear-gradient(135deg, #F4F7F6 0%, #EDF2EE 50%, #F0F4F1 100%);
+  background-attachment: fixed;
   color: #1F2D3D;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
-/* ===== Card ===== */
+/* ===== Liquid Glass Card ===== */
 .glass-card {
-  background: #FFFFFF;
-  border: 1px solid #E0E6E4;
-  border-radius: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.40);
+  backdrop-filter: blur(40px) saturate(1.5);
+  -webkit-backdrop-filter: blur(40px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  border-radius: 2rem;
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
+    0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 .glass-card:hover {
-  border-color: #CBD5D1;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  transform: translateY(-2px);
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
+    0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 /* ===== Gradient Text ===== */
@@ -81,18 +88,22 @@ body {
   color: white;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   cursor: pointer;
   font-size: 0.95rem;
   letter-spacing: 0.01em;
+  will-change: transform;
 }
 
 .btn-primary:hover:not(:disabled) {
   background: #008E4D;
-  transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 166, 90, 0.25);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
 .btn-primary:disabled {
@@ -103,19 +114,26 @@ body {
 }
 
 .btn-secondary {
-  background: #F4F7F6;
+  background: rgba(244, 247, 246, 0.60);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   color: #1F2D3D;
   font-weight: 500;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
-  border: 1px solid #E0E6E4;
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(224, 230, 228, 0.6);
   cursor: pointer;
+  will-change: transform;
 }
 
 .btn-secondary:hover {
-  background: #E0E6E4;
+  background: rgba(224, 230, 228, 0.70);
   border-color: #CBD5D1;
+}
+
+.btn-secondary:active {
+  transform: scale(0.96);
 }
 
 .btn-danger {
@@ -123,15 +141,20 @@ body {
   color: white;
   font-weight: 600;
   padding: 0.75rem 1.5rem;
-  border-radius: 0.75rem;
-  transition: all 0.3s ease;
+  border-radius: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   cursor: pointer;
+  will-change: transform;
 }
 
 .btn-danger:hover:not(:disabled) {
   background: #dc2626;
   box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25);
+}
+
+.btn-danger:active:not(:disabled) {
+  transform: scale(0.96);
 }
 
 .btn-danger:disabled {
@@ -141,9 +164,11 @@ body {
 
 /* ===== Input Styles ===== */
 .input-field {
-  background: #FFFFFF;
-  border: 1px solid #E0E6E4;
-  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.60);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(224, 230, 228, 0.6);
+  border-radius: 1rem;
   padding: 0.75rem 1rem;
   color: #1F2D3D;
   font-size: 0.95rem;
@@ -200,9 +225,11 @@ body {
 /* ===== Toggle Switch ===== */
 .toggle-group {
   display: flex;
-  background: #F4F7F6;
-  border-radius: 0.75rem;
-  border: 1px solid #E0E6E4;
+  background: rgba(244, 247, 246, 0.60);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  border: 1px solid rgba(224, 230, 228, 0.6);
   overflow: hidden;
 }
 
@@ -253,7 +280,7 @@ body {
 }
 
 .data-table thead th {
-  background: #F4F7F6;
+  background: rgba(244, 247, 246, 0.60);
   padding: 0.875rem 1rem;
   text-align: left;
   font-weight: 600;
@@ -261,14 +288,14 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #5A6B7D;
-  border-bottom: 1px solid #E0E6E4;
+  border-bottom: 1px solid rgba(224, 230, 228, 0.6);
 }
 
 .data-table tbody td {
   padding: 0.875rem 1rem;
   font-size: 0.9rem;
   color: #1F2D3D;
-  border-bottom: 1px solid #F4F7F6;
+  border-bottom: 1px solid rgba(244, 247, 246, 0.5);
 }
 
 .data-table tbody tr {
@@ -276,7 +303,7 @@ body {
 }
 
 .data-table tbody tr:hover {
-  background: #F4F7F6;
+  background: rgba(244, 247, 246, 0.5);
 }
 
 /* ===== Animations ===== */
@@ -316,6 +343,81 @@ body {
   }
 }
 
+/* ── Liquid Blob Keyframes ── */
+@keyframes liquid-blob-1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  15% {
+    transform: translate(80px, -120px) scale(1.1);
+  }
+  30% {
+    transform: translate(-60px, -80px) scale(0.95);
+  }
+  50% {
+    transform: translate(120px, 60px) scale(1.15);
+  }
+  65% {
+    transform: translate(-40px, 100px) scale(1.05);
+  }
+  80% {
+    transform: translate(60px, -40px) scale(0.9);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+@keyframes liquid-blob-2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  20% {
+    transform: translate(-100px, 80px) scale(1.15);
+  }
+  40% {
+    transform: translate(70px, 120px) scale(0.9);
+  }
+  55% {
+    transform: translate(-80px, -60px) scale(1.1);
+  }
+  75% {
+    transform: translate(100px, -100px) scale(0.95);
+  }
+  90% {
+    transform: translate(-30px, 40px) scale(1.05);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+.liquid-blob {
+  position: fixed;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.20;
+  pointer-events: none;
+  will-change: transform;
+  z-index: 0;
+}
+
+.liquid-blob-1 {
+  background: radial-gradient(circle, rgba(0, 166, 90, 0.6) 0%, rgba(34, 197, 94, 0.3) 50%, transparent 70%);
+  top: -10%;
+  left: -5%;
+  animation: liquid-blob-1 20s ease-in-out infinite;
+}
+
+.liquid-blob-2 {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.5) 0%, rgba(168, 85, 247, 0.3) 50%, transparent 70%);
+  bottom: -15%;
+  right: -5%;
+  animation: liquid-blob-2 25s ease-in-out infinite;
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease forwards;
 }
@@ -342,15 +444,19 @@ body {
 }
 
 .modal-card {
-  background: #FFFFFF;
-  border: 1px solid #E0E6E4;
-  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(40px) saturate(1.5);
+  -webkit-backdrop-filter: blur(40px) saturate(1.5);
+  border: 1px solid rgba(255, 255, 255, 0.40);
+  border-radius: 2rem;
   padding: 1.5rem;
   width: 100%;
   max-width: 420px;
   margin: 0 1rem;
   animation: slideUp 0.25s ease;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+  box-shadow:
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.3),
+    0 25px 60px rgba(0, 0, 0, 0.12);
 }
 
 /* ===== Toast Notification ===== */
@@ -363,22 +469,24 @@ body {
   align-items: center;
   gap: 0.75rem;
   padding: 0.875rem 1.25rem;
-  border-radius: 0.75rem;
+  border-radius: 1rem;
   font-size: 0.9rem;
   font-weight: 500;
   animation: slideIn 0.3s ease;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   max-width: 400px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .toast-success {
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.80);
   border: 1px solid rgba(0, 166, 90, 0.3);
   color: #00A65A;
 }
 
 .toast-error {
-  background: #FFFFFF;
+  background: rgba(255, 255, 255, 0.80);
   border: 1px solid rgba(239, 68, 68, 0.3);
   color: #ef4444;
 }
@@ -401,7 +509,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #F4F7F6;
+  background: rgba(244, 247, 246, 0.5);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -411,4 +519,20 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #8A9BAD;
+}
+
+/* ===== Liquid Glass Detail Info Cards ===== */
+.glass-info-card {
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: rgba(244, 247, 246, 0.50);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(224, 230, 228, 0.5);
+  transition: all 0.2s ease;
+}
+
+.glass-info-card:hover {
+  background: rgba(244, 247, 246, 0.70);
+  border-color: rgba(203, 213, 209, 0.6);
 }

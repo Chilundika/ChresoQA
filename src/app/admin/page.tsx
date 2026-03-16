@@ -256,7 +256,7 @@ export default function AdminDashboard() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900">Admin Dashboard</h1>
+                    <h1 className="text-3xl font-black text-black">Admin Dashboard</h1>
                     <p className="text-gray-500 text-sm mt-1">Manage events and registrations</p>
                 </div>
                 <div className="flex gap-3">

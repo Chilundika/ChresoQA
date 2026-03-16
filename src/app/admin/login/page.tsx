@@ -62,13 +62,27 @@ export default function AdminLoginPage() {
     };
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-4">
+        <div 
+            className="min-h-screen flex items-center justify-center px-4"
+            style={{
+                background: 'linear-gradient(135deg, #D033FF 0%, #4DA6FF 100%)',
+            }}
+        >
             {/* ── Toast Notification ── */}
             <Suspense fallback={null}>
                 <ExpiredToast />
             </Suspense>
 
-            <div className="glass-card p-8 sm:p-10 w-full max-w-md animate-slide-up">
+            <div 
+                className="p-8 sm:p-10 w-full max-w-md animate-slide-up"
+                style={{
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    borderRadius: '2rem',
+                }}
+            >
                 {/* Header */}
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center mb-4">
@@ -80,26 +94,26 @@ export default function AdminLoginPage() {
                             className="rounded-2xl"
                         />
                     </div>
-                    <h1 className="text-2xl font-black text-gray-900">Admin Login</h1>
-                    <p className="text-gray-500 text-sm mt-1">Sign in to manage events</p>
+                    <h1 className="text-2xl font-black text-black">Admin Login</h1>
+                    <p className="text-black/60 text-sm mt-1">Sign in to manage events</p>
                 </div>
 
                 {error && (
-                    <div className="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg text-sm mb-6">
+                    <div className="bg-red-500/20 border border-red-500/40 text-red-900 px-4 py-3 rounded-lg text-sm mb-6">
                         {error}
                     </div>
                 )}
 
                 <form onSubmit={handleLogin} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-1.5">Email</label>
+                        <label className="block text-sm font-medium text-black mb-1.5">Email</label>
                         <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="input-field pl-10"
+                                className="input-field pl-10 bg-white border-white/20 text-black placeholder-black/30 focus:bg-white focus:border-black/20"
                                 placeholder=""
                                 required
                             />
@@ -107,14 +121,14 @@ export default function AdminLoginPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-600 mb-1.5">Password</label>
+                        <label className="block text-sm font-medium text-black mb-1.5">Password</label>
                         <div className="relative">
-                            <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                            <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-black/40" />
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="input-field pl-10"
+                                className="input-field pl-10 bg-white border-white/20 text-black placeholder-black/30 focus:bg-white focus:border-black/20"
                                 placeholder=""
                                 required
                             />
@@ -124,7 +138,7 @@ export default function AdminLoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="btn-primary w-full flex items-center justify-center gap-2 py-3.5"
+                        className="btn-primary w-full flex items-center justify-center gap-2 py-3.5 bg-white text-[#D033FF] hover:bg-white/90 active:scale-[0.98] font-bold"
                     >
                         {loading ? (
                             <>

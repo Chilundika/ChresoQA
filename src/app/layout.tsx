@@ -18,8 +18,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased" suppressHydrationWarning>
+        {/* Atmospheric Liquid Blobs */}
+        <div className="liquid-blob liquid-blob-1" aria-hidden="true" />
+        <div className="liquid-blob liquid-blob-2" aria-hidden="true" />
+
         <Navbar />
-        <main className="min-h-screen">
+        <main className="min-h-screen relative" style={{ zIndex: 1 }}>
           {children}
         </main>
       </body>
