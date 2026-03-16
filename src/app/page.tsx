@@ -92,10 +92,10 @@ export default function HomePage() {
           <span className="text-black">Campus Events within your Varsity</span>
         </h1>
         <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
-          Join Orientations, Tutorials, Live Q&A sessions and Live lesson broadcasts (Coming soon!).
+         Join Orientations, Tutorials, and Live Q&A sessions.   Secure your spot before it fills up!.
         </p>
         <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
-          Secure your spot before it fills up!
+         Live lesson broadcasts (Coming soon!).
         </p>
       </div>
 
