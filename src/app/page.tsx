@@ -89,7 +89,7 @@ export default function HomePage() {
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight">
           <span className="text-black">Discover & Register for</span>
           <br />
-          <span className="text-black">Campus Events within your Varsity</span>
+          <span className="text-black">Campus Events</span>
         </h1>
         <p className="mt-4 text-lg text-gray-500 max-w-2xl mx-auto">
          Join Orientations, Tutorials, and Live Q&A sessions.   Secure your spot before it fills up!.
