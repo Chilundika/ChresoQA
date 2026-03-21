@@ -51,9 +51,11 @@ export default function HomePage() {
       const { data: eventsData, error: eventsError } = await supabase
         .from('events')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('event_date', { ascending: true });
 
       if (eventsError) throw eventsError;
+
+      const now = new Date();
 
       const eventsWithCounts = await Promise.all(
         (eventsData || []).map(async (event: Event) => {
@@ -66,7 +68,20 @@ export default function HomePage() {
         })
       );
 
-      setEvents(eventsWithCounts);
+      // Filter events: only show those that are active and open
+      const filteredEvents = eventsWithCounts.filter(event => {
+        const isFull = event.registration_count >= event.max_capacity;
+        const isOpen = event.is_open !== false;
+        const isPast = event.start_timestamp ? new Date(event.start_timestamp) < now : false;
+        const isWithinTwoHours = event.start_timestamp
+          ? (new Date(event.start_timestamp).getTime() - now.getTime() <= 7200000)
+          : false;
+
+        const isClosed = !isOpen || isFull || isWithinTwoHours || isPast;
+        return !isClosed;
+      });
+
+      setEvents(filteredEvents);
     } catch (err) {
       console.error('Error fetching events:', err);
     }

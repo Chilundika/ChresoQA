@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "CampusQA — Event Registration",
@@ -17,15 +18,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="font-sans antialiased" suppressHydrationWarning>
+      <body className="font-sans antialiased flex flex-col min-h-screen" suppressHydrationWarning>
         {/* Atmospheric Liquid Blobs */}
         <div className="liquid-blob liquid-blob-1" aria-hidden="true" />
         <div className="liquid-blob liquid-blob-2" aria-hidden="true" />
 
         <Navbar />
-        <main className="min-h-screen relative" style={{ zIndex: 1 }}>
+        <main className="flex-grow relative" style={{ zIndex: 1 }}>
           {children}
         </main>
+        <Footer />
       </body>
     </html>
   );
