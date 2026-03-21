@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 .vscode/
+supabase/.temp/
 
 # debug
 npm-debug.log*
