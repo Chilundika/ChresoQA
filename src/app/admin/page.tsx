@@ -5,11 +5,9 @@ import { supabase } from '@/lib/supabase';
 import { Event } from '@/lib/types';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import {
-    Plus, LogOut, Calendar, Users, Trash2, Eye, Loader2,
-    AlertTriangle, X, CheckCircle2, Download, Power, PowerOff, Archive, ArchiveRestore
-} from 'lucide-react';
-import { exportToExcel } from '@/lib/excel';
+import { Plus, LogOut, Calendar, Users, Trash2, Eye, Loader2,
+    AlertTriangle, X, CheckCircle2, Download, Power, PowerOff, Archive, ArchiveRestore } from 'lucide-react';
+import { exportToExcel, exportEventsToCSV } from '@/lib/excel';
 
 const typeLabels: Record<string, string> = {
     orientation: 'Orientation',
@@ -108,6 +106,28 @@ export default function AdminDashboard() {
             console.error('Export error:', err);
             showToast('Failed to export data.', 'error');
         }
+    }
+
+    async function handleExportArchivedEvents() {
+        if (archivedEvents.length === 0) {
+            showToast('No archived events to export.', 'error');
+            return;
+        }
+
+        const exportData = archivedEvents.map(event => ({
+            'Event Name': event.title,
+            'Event Type': typeLabels[event.type],
+            'Date': event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+            }) : '—',
+            'Attendance / Capacity': `${event.registration_count} / ${event.max_capacity}`,
+            'Status': 'Past'
+        }));
+
+        exportEventsToCSV(exportData, `archived_events_report_${new Date().toISOString().split('T')[0]}`);
+        showToast('Archived events report exported.', 'success');
     }
 
     async function handleArchive(event: Event & { registration_count: number }) {
@@ -312,26 +332,38 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            {/* Tabs */}
-            <div className="flex border-b border-gray-200 mb-6">
-                <button
-                    onClick={() => setActiveTab('active')}
-                    className={`pb-4 px-6 text-sm font-medium transition-colors relative ${activeTab === 'active' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                >
-                    Active Events
-                    {activeTab === 'active' && (
-                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full"></span>
-                    )}
-                </button>
-                <button
-                    onClick={() => setActiveTab('archived')}
-                    className={`pb-4 px-6 text-sm font-medium transition-colors relative ${activeTab === 'archived' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-                >
-                    Archived Events
-                    {activeTab === 'archived' && (
-                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full"></span>
-                    )}
-                </button>
+            {/* Tabs & Bulk Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 mb-6">
+                <div className="flex">
+                    <button
+                        onClick={() => setActiveTab('active')}
+                        className={`pb-4 px-6 text-sm font-medium transition-colors relative ${activeTab === 'active' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                        Active Events
+                        {activeTab === 'active' && (
+                            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full"></span>
+                        )}
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('archived')}
+                        className={`pb-4 px-6 text-sm font-medium transition-colors relative ${activeTab === 'archived' ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    >
+                        Archived Events
+                        {activeTab === 'archived' && (
+                            <span className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 rounded-t-full"></span>
+                        )}
+                    </button>
+                </div>
+
+                {activeTab === 'archived' && archivedEvents.length > 0 && (
+                    <button
+                        onClick={handleExportArchivedEvents}
+                        className="mb-4 sm:mb-0 pb-4 sm:pb-0 px-6 text-sm font-medium text-green-600 hover:text-green-700 transition-colors flex items-center gap-2"
+                    >
+                        <Download className="w-4 h-4" />
+                        Download Records
+                    </button>
+                )}
             </div>
 
             {/* Events Table */}

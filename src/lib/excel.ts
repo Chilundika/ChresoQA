@@ -26,3 +26,20 @@ export function exportToExcel(data: Registration[], filename: string = 'registra
 
     XLSX.writeFile(workbook, `${filename}.xlsx`);
 }
+
+export function exportEventsToCSV(data: any[], filename: string = 'events_report') {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const csvOutput = XLSX.utils.sheet_to_csv(worksheet);
+    
+    const blob = new Blob([csvOutput], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${filename}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
