@@ -26,7 +26,26 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(loginUrl);
     }
 
-    // Authenticated — pass through with any refreshed cookies
+    // Verify the user is an admin by checking the admin_users table
+    const { data: adminRecord, error: adminError } = await supabase
+        .from('admin_users')
+        .select('user_id')
+        .eq('user_id', user.id)
+        .single();
+
+    if (adminError || !adminRecord) {
+        // Authenticated but not an admin → redirect to login page with error
+        const loginUrl = request.nextUrl.clone();
+        loginUrl.pathname = '/admin/login';
+        loginUrl.searchParams.set('error', 'unauthorized');
+        
+        // Optionally delete the session cookie so they aren't stuck logged in as a non-admin,
+        // but Supabase SSR requires more setup for that. For now, the explicit error parameter
+        // gives them visual feedback on the login page.
+        return NextResponse.redirect(loginUrl);
+    }
+
+    // Authenticated admin — pass through with any refreshed cookies
     return response;
 }
 

@@ -16,6 +16,11 @@ function ExpiredToast() {
             const timer = setTimeout(() => setToast(null), 5000);
             return () => clearTimeout(timer);
         }
+        if (searchParams.get('error') === 'unauthorized') {
+            setToast({ message: 'You do not have permission to view the admin dashboard.', type: 'error' });
+            const timer = setTimeout(() => setToast(null), 5000);
+            return () => clearTimeout(timer);
+        }
     }, [searchParams]);
 
     if (!toast) return null;

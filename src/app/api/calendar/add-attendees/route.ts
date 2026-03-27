@@ -34,7 +34,13 @@ export async function POST(req: Request) {
             const tokenData = await tokenRes.json();
             if (tokenData.access_token) {
                 accessToken = tokenData.access_token;
-                cookieStore.set('gcal_access_token', accessToken as string, { maxAge: tokenData.expires_in, path: '/' });
+                cookieStore.set('gcal_access_token', accessToken as string, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'lax' as const,
+                    path: '/api/calendar',
+                    maxAge: tokenData.expires_in,
+                });
             } else {
                 return NextResponse.json({ error: 'Failed to refresh token' }, { status: 401 });
             }

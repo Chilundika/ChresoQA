@@ -30,9 +30,15 @@ export async function GET(req: Request) {
     }
 
     const cookieStore = await cookies();
-    cookieStore.set('gcal_access_token', tokenData.access_token, { maxAge: tokenData.expires_in, path: '/' });
+    const secureCookieFlags = {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax' as const,
+        path: '/api/calendar',
+    };
+    cookieStore.set('gcal_access_token', tokenData.access_token, { ...secureCookieFlags, maxAge: tokenData.expires_in });
     if (tokenData.refresh_token) {
-        cookieStore.set('gcal_refresh_token', tokenData.refresh_token, { maxAge: 30 * 24 * 60 * 60, path: '/' });
+        cookieStore.set('gcal_refresh_token', tokenData.refresh_token, { ...secureCookieFlags, maxAge: 30 * 24 * 60 * 60 });
     }
 
     return NextResponse.redirect(`${url.origin}/admin/events/${state}?authed=true`);
