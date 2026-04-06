@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Event } from '@/lib/types';
 import EventCard from '@/components/EventCard';
-import { Sparkles, Loader2, CheckCircle, X } from 'lucide-react';
+import { Loader2, CheckCircle, X } from 'lucide-react';
 
 function ThankYouBanner() {
   const searchParams = useSearchParams();
@@ -97,10 +97,7 @@ export default function HomePage() {
 
       {/* Hero */}
       <div className="text-center mb-16 animate-slide-up">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium mb-6">
-          <Sparkles className="w-4 h-4" />
-          Campus Events Registration
-        </div>
+
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight">
           <span className="text-black">Discover & Register for</span>
           <br />
